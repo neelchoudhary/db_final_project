@@ -8,7 +8,7 @@ export default class PlaylistsPage extends React.Component {
 
         this.state = {
             playlists: [],
-            artistId: window.location.pathname.split("/")[3],
+            userId: window.location.pathname.split("/")[3],
         }
 
         this.getPlaylists = this.getPlaylists.bind(this)
@@ -16,15 +16,15 @@ export default class PlaylistsPage extends React.Component {
 
     async componentDidMount() {
         if (this.props.isFiltered) {
-            await this.getPlaylistsByArtist(this.state.artistId)
+            await this.getPlaylistsByUserId(this.state.userId)
         } else {
             await this.getPlaylists()
         }
     }
 
-    async getPlaylistsByArtist(artistId) {
+    async getPlaylistsByUserId(userId) {
         console.log("Fetching Playlists")
-        await getPlaylistsByUserIdAPI(artistId)
+        await getPlaylistsByUserIdAPI(userId)
             .then(async (playlists) => {
                 console.log(playlists)
                 this.setState({
@@ -60,7 +60,7 @@ export default class PlaylistsPage extends React.Component {
         return (
             <React.Fragment>
                 {!this.props.isFiltered && <h1>Playlists List</h1>}
-                {this.props.isFiltered && <h1>Playlists List for Artist Id: {this.state.artistId}</h1>}
+                {this.props.isFiltered && <h1>Playlists List for User Id: {this.state.userId}</h1>}
                 <a href='/playlists/edit'><button>Create Playlist</button></a>
                 <ul>
                     {this.state.playlists.map((playlist) => {
@@ -84,7 +84,7 @@ function toTime(sec) {
     return min + ":" + sec
 }
 
-function PlaylistListItem({ playlist }) {
+export function PlaylistListItem({ playlist }) {
     const { id, user, title, description} = playlist
     return (
         <div className='playlist-card row'>

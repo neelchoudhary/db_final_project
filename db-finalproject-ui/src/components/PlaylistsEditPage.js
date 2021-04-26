@@ -1,5 +1,5 @@
 import React from 'react'
-import { getPlaylistByIdAPI, updatePlaylistByIdAPI, deletePlaylistByIdAPI, createPlaylistAPI, getUsersAPI } from '../utils/api'
+import { getPlaylistByIdAPI, updatePlaylistByIdAPI, deletePlaylistByIdAPI, createPlaylistAPI, getUsersAPI, getSongsAPI, getSongsByPlaylistIdAPI, addSongToPlaylistAPI, removeSongFromPlaylistAPI } from '../utils/api'
 import { SongListItem } from './SongsPage'
 
 
@@ -15,6 +15,8 @@ export default class PlaylistsEditPage extends React.Component {
             isNew: window.location.pathname.split("/")[3] === undefined,
             users: [],
             songs: [],
+            allSongs: [],
+            songToAdd: "",
         }
 
         this.getPlaylist = this.getPlaylist.bind(this)
@@ -30,6 +32,7 @@ export default class PlaylistsEditPage extends React.Component {
         await this.getUsers()
         if (!this.state.isNew) {
             await this.getSongsByPlaylist(this.state.playlistId)
+            await this.getSongs()
         }
 
     }
@@ -39,6 +42,12 @@ export default class PlaylistsEditPage extends React.Component {
         newPlaylistForm[field] = event.target.value
         this.setState({
             playlistForm: newPlaylistForm
+        })
+    }
+
+    handleChange2 = (event, field) => {
+        this.setState({
+            [field]: event.target.value
         })
     }
 
@@ -81,6 +90,18 @@ export default class PlaylistsEditPage extends React.Component {
         }
     }
 
+    addSong = async (event) => {
+        event.preventDefault()
+        if (this.state.songToAdd !== "") {
+            await this.addSongToPlaylist(this.state.playlistId, this.state.songToAdd)
+        }
+    }
+
+    removeSong = async (event, songId) => {
+        event.preventDefault()
+        await this.removeSongFromPlaylist(this.state.playlistId, songId)
+    }
+
     copyObj = (obj) => {
         return {
             title: obj['title'],
@@ -108,12 +129,29 @@ export default class PlaylistsEditPage extends React.Component {
     }
 
     async getSongsByPlaylist(playlistId) {
-        console.log("Fetching Songs")
+        console.log("Fetching Playlist Songs")
         await getSongsByPlaylistIdAPI(playlistId)
             .then(async (songs) => {
                 console.log(songs)
                 this.setState({
                     songs: songs
+                })
+            })
+            .catch((error) => {
+                console.warn("Error fetching playlist songs: " + error)
+                // this.setState({
+                //     error: 'There was an error fetching the song info.'
+                // })
+            })
+    }
+
+    async getSongs() {
+        console.log("Fetching Songs")
+        await getSongsAPI()
+            .then(async (songs) => {
+                console.log(songs)
+                this.setState({
+                    allSongs: songs
                 })
             })
             .catch((error) => {
@@ -191,6 +229,34 @@ export default class PlaylistsEditPage extends React.Component {
             })
     }
 
+    async addSongToPlaylist(playlistId, songId) {
+        console.log("Addding Song to Playlist..")
+        await addSongToPlaylistAPI(playlistId, songId)
+            .then(async () => {
+                await this.getSongsByPlaylist(this.state.playlistId)
+            })
+            .catch((error) => {
+                console.warn("Error adding song to playlist: " + error)
+                // this.setState({
+                //     error: 'There was an error fetching the playlist info.'
+                // })
+            })
+    }
+
+    async removeSongFromPlaylist(playlistId, songId) {
+        console.log("Removing Song from Playlist..")
+        await removeSongFromPlaylistAPI(playlistId, songId)
+            .then(async () => {
+                await this.getSongsByPlaylist(this.state.playlistId)
+            })
+            .catch((error) => {
+                console.warn("Error removing song from playlist: " + error)
+                // this.setState({
+                //     error: 'There was an error fetching the playlist info.'
+                // })
+            })
+    }
+
     render() {
         return (
             <React.Fragment>
@@ -204,14 +270,24 @@ export default class PlaylistsEditPage extends React.Component {
                             deleteEntry={this.delete} createEntry={this.create} users={this.state.users} />
                     </div>
                     <div>
-                        <h3>Songs</h3>
-                        <ul>
+                        <h3>Songs in Playlist</h3>
+                        <button onClick={(event) => this.addSong(event)}>Add Song</button>
+                        {<select required id="3" value={this.state.songToAdd} onChange={(event) => this.handleChange2(event, "songToAdd")}>
+                            <option value=""></option>
+                            {this.state.allSongs.map((song, index) => {
+                                return (
+                                    <option key={index} value={song.id}>{song.name} - {song.artist.name}</option>
+                                )
+                            })}
+                        </select>}
+                        <ul >
                             {this.state.songs.map((song) => {
                                 return (
                                     <li key={song.id}>
                                         <SongListItem
                                             song={song}
                                         />
+                                        <button onClick={(event) => this.removeSong(event, song.id)}>Remove Song From Playlist</button>
                                     </li>
                                 )
                             })}

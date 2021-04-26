@@ -1,4 +1,4 @@
-const server_name = "http://23461d240749.ngrok.io/api"
+const server_name = "http://localhost:8080/api"
 
 // Retrieve all artists from the server
 export const getArtistsAPI = () =>
@@ -146,5 +146,26 @@ export const createPlaylistAPI = (playlist, artistId) =>
         method: 'POST',
         body: JSON.stringify(playlist),
         headers: { 'content-type': 'application/json' }
+    })
+        .then(response => response.json())
+
+
+// Retrieve all songs for a playlist from the server
+export const getSongsByPlaylistIdAPI = (playlistId) =>
+    fetch(`${server_name}/songs/playlist/${playlistId}`)
+        .then(response => response.json())
+
+
+// Add song to playlist in server
+export const addSongToPlaylistAPI = (playlistId, songId) =>
+    fetch(`${server_name}/playlists/${playlistId}/addsong/${songId}`, {
+        method: 'POST'
+    })
+        .then(response => response.json())
+
+// Remove song from playlist in server
+export const removeSongFromPlaylistAPI = (playlistId, songId) =>
+    fetch(`${server_name}/playlists/${playlistId}/removesong/${songId}`, {
+        method: 'POST'
     })
         .then(response => response.json())

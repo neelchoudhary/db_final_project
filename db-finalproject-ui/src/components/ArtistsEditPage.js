@@ -1,5 +1,6 @@
 import React from 'react'
-import { getArtistByIdAPI, updateArtistByIdAPI, deleteArtistByIdAPI, createArtistAPI } from '../utils/api'
+import { getArtistByIdAPI, updateArtistByIdAPI, deleteArtistByIdAPI, createArtistAPI, getSongsByArtistIdAPI } from '../utils/api'
+import { SongListItem } from './SongsPage'
 
 
 export default class ArtistsEditPage extends React.Component {
@@ -12,17 +13,20 @@ export default class ArtistsEditPage extends React.Component {
             artist: {},
             artistForm: {},
             isNew: window.location.pathname.split("/")[3] === undefined,
+            songs: [],
         }
 
         this.getArtist = this.getArtist.bind(this)
         this.updateArtist = this.updateArtist.bind(this)
         this.deleteArtist = this.deleteArtist.bind(this)
         this.createArtist = this.createArtist.bind(this)
+        this.getSongsByArtist = this.getSongsByArtist.bind(this)
     }
 
     async componentDidMount() {
         if (!this.state.isNew) {
             await this.getArtist(this.state.artistId)
+            await this.getSongsByArtist(this.state.artistId)
         }
     }
 
@@ -139,14 +143,50 @@ export default class ArtistsEditPage extends React.Component {
             })
     }
 
+    async getSongsByArtist(artistId) {
+        console.log("Fetching Songs By Artist")
+        await getSongsByArtistIdAPI(artistId)
+            .then(async (songs) => {
+                console.log(songs)
+                this.setState({
+                    songs: songs
+                })
+            })
+            .catch((error) => {
+                console.warn("Error fetching songs by artist: " + error)
+                // this.setState({
+                //     error: 'There was an error fetching the song info.'
+                // })
+            })
+    }
+
     render() {
         return (
             <React.Fragment>
                 <h1>Artist Edit Page</h1>
                 <a href='/artists'><button>Back</button></a>
-                <Header artistId={this.state.artistId} isNew={this.state.isNew} />
-                <ArtistEditForm isNew={this.state.isNew} artistForm={this.state.artistForm} artistId={this.state.artistId} artist={this.state.artist}
-                    handleChange={this.handleChange} resetEntry={this.reset} updateEntry={this.update} deleteEntry={this.delete} createEntry={this.create} />
+                <div className='row1'>
+                    <div>
+                        <Header artistId={this.state.artistId} isNew={this.state.isNew} />
+                        <ArtistEditForm isNew={this.state.isNew} artistForm={this.state.artistForm} artistId={this.state.artistId} artist={this.state.artist}
+                            handleChange={this.handleChange} resetEntry={this.reset} updateEntry={this.update} deleteEntry={this.delete} createEntry={this.create} />
+                    </div>
+                    <div>
+                        <h3>Songs for Artist</h3>
+                        <ul>
+                            {this.state.songs.map((song) => {
+                                return (
+                                    <li key={song.id}>
+                                        <SongListItem
+                                            song={song}
+                                        />
+                                    </li>
+                                )
+                            })}
+                        </ul>
+                    </div>
+                </div>
+
             </React.Fragment>
         )
     }
@@ -169,9 +209,7 @@ class ArtistEditForm extends React.Component {
                 <label htmlFor="1" >Name</label>
                 <input required id="1" value={artistForm.name} className="form-control" onChange={(event) => handleChange(event, "name")} />
                 <br />
-                
-                <a href={`/songs/artist/${artistForm.id}`}>Check out their songs!</a>
-                <br />
+
                 {!isNew && <button className="btn btn-warning" disabled={this.shouldNotUpdate()} onClick={(event) => updateEntry(event)}>Update</button>}
                 {!isNew && <button className="btn btn-danger" onClick={(event) => deleteEntry(event)}>Delete</button>}
                 {!isNew && <button className="btn btn-primary" disabled={this.shouldNotUpdate()} onClick={(event) => resetEntry(event)}>Reset</button>}

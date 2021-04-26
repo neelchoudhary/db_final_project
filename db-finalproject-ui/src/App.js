@@ -49,10 +49,6 @@ function App() {
             <SongsEditPage />
           } />
 
-          <Route path='/songs/artist' render={props =>
-            <SongsPage isFiltered={true} />
-          } />
-
           <Route exact path='/playlists' render={props =>
             <PlaylistsPage />
           } />

@@ -1,5 +1,6 @@
 import React from 'react'
-import { getUserByIdAPI, updateUserByIdAPI, deleteUserByIdAPI, createUserAPI } from '../utils/api'
+import { getUserByIdAPI, updateUserByIdAPI, deleteUserByIdAPI, createUserAPI, getPlaylistsByUserIdAPI } from '../utils/api'
+import { PlaylistListItem } from './PlaylistsPage'
 
 
 export default class UsersEditPage extends React.Component {
@@ -12,17 +13,20 @@ export default class UsersEditPage extends React.Component {
             user: {},
             userForm: {},
             isNew: window.location.pathname.split("/")[3] === undefined,
+            playlists: [],
         }
 
         this.getUser = this.getUser.bind(this)
         this.updateUser = this.updateUser.bind(this)
         this.deleteUser = this.deleteUser.bind(this)
         this.createUser = this.createUser.bind(this)
+        this.getPlaylistsByUserId = this.getPlaylistsByUserId.bind(this)
     }
 
     async componentDidMount() {
         if (!this.state.isNew) {
             await this.getUser(this.state.userId)
+            await this.getPlaylistsByUserId(this.state.userId)
         }
     }
 
@@ -147,14 +151,50 @@ export default class UsersEditPage extends React.Component {
             })
     }
 
+    async getPlaylistsByUserId(userId) {
+        console.log("Fetching Playlists By User")
+        await getPlaylistsByUserIdAPI(userId)
+            .then(async (playlists) => {
+                console.log(playlists)
+                this.setState({
+                    playlists: playlists
+                })
+            })
+            .catch((error) => {
+                console.warn("Error fetching playlists by user id: " + error)
+                // this.setState({
+                //     error: 'There was an error fetching the playlist info.'
+                // })
+            })
+    }
+
     render() {
         return (
             <React.Fragment>
                 <h1>User Edit Page</h1>
                 <a href='/users'><button>Back</button></a>
-                <Header userId={this.state.userId} isNew={this.state.isNew} />
-                <UserEditForm isNew={this.state.isNew} userForm={this.state.userForm} userId={this.state.userId} user={this.state.user}
-                    handleChange={this.handleChange} resetEntry={this.reset} updateEntry={this.update} deleteEntry={this.delete} createEntry={this.create} />
+                <div className='row1'>
+                    <div>
+                        <Header userId={this.state.userId} isNew={this.state.isNew} />
+                        <UserEditForm isNew={this.state.isNew} userForm={this.state.userForm} userId={this.state.userId} user={this.state.user}
+                            handleChange={this.handleChange} resetEntry={this.reset} updateEntry={this.update} deleteEntry={this.delete} createEntry={this.create} />
+                    </div>
+                    <div>
+                        <h3>Playlists for User</h3>
+                        <ul >
+                            {this.state.playlists.map((playlist) => {
+                                return (
+                                    <li key={playlist.id}>
+                                        <PlaylistListItem
+                                            playlist={playlist}
+                                        />
+                                    </li>
+                                )
+                            })}
+                        </ul>
+                    </div>
+                </div>
+
             </React.Fragment>
         )
     }

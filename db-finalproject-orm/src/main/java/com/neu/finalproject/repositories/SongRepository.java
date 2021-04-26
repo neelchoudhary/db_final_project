@@ -16,6 +16,6 @@ public interface SongRepository extends CrudRepository<Song, Integer> {
     @Query(value = "SELECT * FROM songs WHERE artist_id=:artistId", nativeQuery = true)
     public List<Song> findSongsByArtistId(@Param("artistId") Integer id);
 
-    @Query(value = "SELECT * FROM playlist_songs WHERE playlist_id=:playlistId", nativeQuery = true)
+    @Query(value = "SELECT * FROM songs INNER JOIN playlist_songs ON songs.id=playlist_songs.song_id WHERE playlist_songs.playlist_id=:playlistId", nativeQuery = true)
     public List<Song> findSongsByPlaylistId(@Param("playlistId") Integer id);
 }

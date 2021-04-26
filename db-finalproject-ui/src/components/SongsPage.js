@@ -13,6 +13,7 @@ export default class SongsPage extends React.Component {
         }
 
         this.getSongs = this.getSongs.bind(this)
+        this.getSongsByArtist = this.getSongsByArtist.bind(this)
     }
 
     async componentDidMount() {
@@ -90,7 +91,7 @@ export function SongListItem({ song }) {
     return (
         <div className='song-card row'>
             <div className='row'>
-                <h3 id='name-text'>{name} - {artist.name}</h3>
+                <h3 id='name-text'>{name} - <a href={`/artists/edit/${artist.id}`}>{artist.name}</a></h3>
                 <h3 id='name-text'>{toTime(length)}</h3>
                 <a href={`/songs/edit/${id}`}><button>Edit</button></a>
             </div>
