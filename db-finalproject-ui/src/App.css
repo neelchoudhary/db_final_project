@@ -29,6 +29,18 @@
   color: white;
 }
 
+
+.header-links {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 20px;
+}
+
+.header-links a{
+  margin-left: 20px;
+  font-size: 20px;
+}
+
 .App-link {
   color: #61dafb;
 }

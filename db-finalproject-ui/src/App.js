@@ -9,22 +9,28 @@ import SongsPage from './components/SongsPage';
 import SongsEditPage from './components/SongsEditPage';
 import PlaylistsPage from './components/PlaylistsPage';
 import PlaylistsEditPage from './components/PlaylistsEditPage';
+import HomePage from './components/HomePage';
 
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <p>
-          Music Player
-        </p>
-        <p>
-          Neel Choudhary,
-          Angela Hu
-        </p>
+        <p>Music Player</p>
+        <div className='header-links'>
+          <a href='/artists'>Artists List</a>
+          <a href='/songs'>Songs List</a>
+          <a href='/users'>Users List</a>
+          <a href='/playlists'>Playlists List</a>
+        </div>
       </header>
       <body className="AppBody">
         <Switch>
+
+          <Route exact path='/' render={props =>
+            <HomePage />
+          } />
+
           <Route exact path='/artists' render={props =>
             <ArtistsPage />
           } />

@@ -172,7 +172,7 @@ export default class UsersEditPage extends React.Component {
         return (
             <React.Fragment>
                 <h1>User Edit Page</h1>
-                <a href='/users'><button>Back</button></a>
+                <a href='/users'><button>Back to Users List</button></a>
                 <div className='row1'>
                     <div>
                         <Header userId={this.state.userId} isNew={this.state.isNew} />

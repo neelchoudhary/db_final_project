@@ -261,7 +261,7 @@ export default class PlaylistsEditPage extends React.Component {
         return (
             <React.Fragment>
                 <h1>Playlist Edit Page</h1>
-                <a href='/playlists'><button>Back</button></a>
+                <a href='/playlists'><button>Back to Playlists List</button></a>
                 <div className='row1'>
                     <div>
                         <Header playlistId={this.state.playlistId} isNew={this.state.isNew} playlistForm={this.state.playlistForm} />

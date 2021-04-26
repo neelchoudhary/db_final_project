@@ -164,7 +164,7 @@ export default class ArtistsEditPage extends React.Component {
         return (
             <React.Fragment>
                 <h1>Artist Edit Page</h1>
-                <a href='/artists'><button>Back</button></a>
+                <a href='/artists'><button>Back to Artists List</button></a>
                 <div className='row1'>
                     <div>
                         <Header artistId={this.state.artistId} isNew={this.state.isNew} />

@@ -182,7 +182,7 @@ export default class SongsEditPage extends React.Component {
         return (
             <React.Fragment>
                 <h1>Song Edit Page</h1>
-                <a href='/songs'><button>Back</button></a>
+                <a href='/songs'><button>Back to Songs List</button></a>
                 <div>
                     <Header songId={this.state.songId} isNew={this.state.isNew} />
                     <SongEditForm isNew={this.state.isNew} songForm={this.state.songForm} songId={this.state.songId} song={this.state.song}
