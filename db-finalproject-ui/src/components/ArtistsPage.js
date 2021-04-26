@@ -1,7 +1,6 @@
 import React from 'react'
 import { getArtistsAPI } from '../utils/api'
 
-
 export default class ArtistsPage extends React.Component {
 
     constructor(props) {
@@ -39,14 +38,13 @@ export default class ArtistsPage extends React.Component {
         return (
             <React.Fragment>
                 <h1>Artists List</h1>
+                <a href='/artists/edit'><button>Create Artist</button></a>
                 <ul>
                     {this.state.artists.map((artist) => {
-                        const { id, name } = artist
                         return (
-                            <li key={id}>
+                            <li key={artist.id}>
                                 <ArtistListItem
-                                    id={id}
-                                    name={name}
+                                    artist={artist}
                                 />
                             </li>
                         )
@@ -57,12 +55,13 @@ export default class ArtistsPage extends React.Component {
     }
 }
 
-function ArtistListItem({ id, name }) {
+function ArtistListItem({ artist }) {
+    const { id, name } = artist
     return (
         <div className='artist-card row'>
             <div className='row'>
                 <h3 id='name-text'>{name}</h3>
-                <button>Edit</button>
+                <a href={`/artists/edit/${id}`}><button>Edit</button></a>
             </div>
         </div>
     )

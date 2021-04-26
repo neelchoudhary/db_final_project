@@ -20,7 +20,7 @@ public class Playlist {
   private Integer id;
 
   @ManyToOne
-  @JsonIgnore
+//  @JsonIgnore
   private User user;
 
   private String title;
@@ -39,9 +39,9 @@ public class Playlist {
   public User getUser() { return user; }
   public void setUser(User user) { this.user = user; }
 
-  public Integer getUserId() {
-    return user.getId();
-  }
+//  public Integer getUserId() {
+//    return user.getId();
+//  }
 
   public String getTitle() { return title; }
   public void setTitle(String name) { this.title = name; }

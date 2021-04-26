@@ -4,7 +4,9 @@ package com.neu.finalproject.models;
     ENGLISH,
     KOREAN,
     SPANISH,
-    JAPANESE,
-    FRENCH
+    FRENCH,
+    HINDI,
+    MANDARIN,
+    OTHER
   }
 

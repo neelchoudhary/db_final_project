@@ -1,5 +1,5 @@
 import React from 'react'
-import { getArtistByIdAPI } from '../utils/api'
+import { getArtistByIdAPI, updateArtistByIdAPI, deleteArtistByIdAPI, createArtistAPI } from '../utils/api'
 
 
 export default class ArtistsEditPage extends React.Component {
@@ -8,40 +8,145 @@ export default class ArtistsEditPage extends React.Component {
         super(props)
 
         this.state = {
-            artist: []
+            artistId: window.location.pathname.split("/")[3],
+            artist: {},
+            artistForm: {},
+            isNew: window.location.pathname.split("/")[3] === undefined,
         }
 
         this.getArtist = this.getArtist.bind(this)
+        this.updateArtist = this.updateArtist.bind(this)
+        this.deleteArtist = this.deleteArtist.bind(this)
+        this.createArtist = this.createArtist.bind(this)
     }
 
     async componentDidMount() {
-        await this.getArtist()
+        if (!this.state.isNew) {
+            await this.getArtist(this.state.artistId)
+        }
     }
 
-    async getArtist() {
-        console.log("Fetching Artist")
-        await getArtistByIdAPI("1")
+    handleChange = (event, field) => {
+        var newArtistForm = this.state.artistForm
+        newArtistForm[field] = event.target.value
+        this.setState({
+            artistForm: newArtistForm
+        })
+    }
+
+    reset = (event) => {
+        event.preventDefault()
+        this.setState({
+            artistForm: Object.create(this.state.artist)
+        })
+    }
+
+    update = async (event) => {
+        event.preventDefault()
+        var ele = document.getElementById("edit-form");
+        var formStatus = ele.checkValidity();
+        ele.reportValidity();
+        if (formStatus) {
+            console.log("UPDATE ENTRY")
+            await this.updateArtist(this.state.artistId, this.state.artistForm)
+        }
+    }
+
+    delete = async (event) => {
+        event.preventDefault()
+        console.log("DELETE ENTRY")
+        await this.deleteArtist(this.state.artistId)
+    }
+
+    create = async (event) => {
+        event.preventDefault()
+        var ele = document.getElementById("edit-form");
+        var formStatus = ele.checkValidity();
+        ele.reportValidity();
+        if (formStatus) {
+            console.log("CREATE ENTRY")
+            await this.createArtist(this.state.artistForm)
+        }
+    }
+
+    async getArtist(artistId) {
+        console.log("Fetching Artist..")
+        await getArtistByIdAPI(artistId)
             .then(async (artist) => {
                 console.log(artist)
                 this.setState({
-                    artist: artist
+                    artist: Object.create(artist),
+                    artistForm: Object.create(artist)
                 })
             })
             .catch((error) => {
-                console.warn("Error fetching artist info: " + error)
+                console.warn("Error fetching artist: " + error)
                 // this.setState({
                 //     error: 'There was an error fetching the artist info.'
                 // })
             })
     }
 
+    async updateArtist(artistId, artist) {
+        console.log("Updating Artist..")
+        await updateArtistByIdAPI(artistId, artist)
+            .then(async (artist) => {
+                console.log(artist)
+                this.setState({
+                    artist: Object.create(artist),
+                    artistForm: Object.create(artist)
+                })
+                window.location.href = 'http://localhost:3000/artists'
+            })
+            .catch((error) => {
+                console.warn("Error updating artist: " + error)
+                // this.setState({
+                //     error: 'There was an error fetching the artist info.'
+                // })
+            })
+    }
+
+    async deleteArtist(artistId) {
+        console.log("Deleting Artist..")
+        await deleteArtistByIdAPI(artistId)
+            .then(async () => {
+                console.log("DELETED SUCCESFFULY")
+                window.location.href = 'http://localhost:3000/artists'
+            })
+            .catch((error) => {
+                console.warn("Error deleting artist: " + error)
+                // this.setState({
+                //     error: 'There was an error fetching the artist info.'
+                // })
+            })
+    }
+
+    async createArtist(artist) {
+        console.log("Creating Artist..")
+        await createArtistAPI(artist)
+            .then(async (artist) => {
+                this.setState({
+                    artist: Object.create(artist),
+                    artistForm: Object.create(artist)
+                })
+                window.location.href = 'http://localhost:3000/artists'
+            })
+            .catch((error) => {
+                console.warn("Error creating artist: " + error)
+                // this.setState({
+                //     error: 'There was an error fetching the artist info.'
+                // })
+            })
+    }
 
     render() {
         return (
             <React.Fragment>
                 <h1>Artist Edit Page</h1>
-                <ArtistItem artist={this.state.artist} />
-                <ArtistEditForm />
+                <a href='/artists'><button>Back</button></a>
+                <Header artistId={this.state.artistId} isNew={this.state.isNew} />
+                <ArtistEditForm isNew={this.state.isNew} artistForm={this.state.artistForm} artistId={this.state.artistId} artist={this.state.artist}
+                    handleChange={this.handleChange} resetEntry={this.reset} updateEntry={this.update} deleteEntry={this.delete} createEntry={this.create} />
             </React.Fragment>
         )
     }
@@ -51,59 +156,44 @@ class ArtistEditForm extends React.Component {
 
     constructor(props) {
         super(props)
-
-        this.state = {
-            artistId: 1,
-            artist: []
-        }
-
-        this.getArtist = this.getArtist.bind(this)
     }
 
-    async getArtist(artistId) {
-        console.log("Fetching Artist")
-        await getArtistByIdAPI(artistId)
-            .then(async (artist) => {
-                console.log(artist)
-                this.setState({
-                    artist: artist
-                })
-            })
-            .catch((error) => {
-                console.warn("Error fetching artist info: " + error)
-                // this.setState({
-                //     error: 'There was an error fetching the artist info.'
-                // })
-            })
+    shouldNotUpdate = () => {
+        return this.props.artist["name"] === this.props.artistForm["name"]
     }
 
     render() {
-        const {artist, artistId} = this.state
+        const { isNew, artistForm, handleChange, resetEntry, updateEntry, deleteEntry, createEntry } = this.props
         return (
-            <div>
-                <h2>Artist Editor</h2>
-                <label>Id</label>
-                <input value={artistId} onChange={(e) => this.setState({artistId: e.target.value})} className="form-control" />
-                <label>Name</label>
-                <input value={artist.name} className="form-control" />
+            <form id='edit-form' class='col'>
+                <label htmlFor="1" >Name</label>
+                <input required id="1" value={artistForm.name} className="form-control" onChange={(event) => handleChange(event, "name")} />
                 <br />
-                <button className="btn btn-success" onClick={() => this.getArtist(artistId)}>Search</button>
-                {/* <button className="btn btn-warning" onClick={() => { history.goBack() }}>Cancel</button> */}
-                {/* <button className="btn btn-danger" onClick={() => deleteUser(user.id)}>Delete</button> */}
-                {/* <button className="btn btn-primary" onClick={() => updateUser(user.id, user)}>Save</button> */}
-                {/* <button className="btn btn-success" onClick={() => createUser(user)}>Create</button> */}
-            </div>
+                
+                <a href={`/songs/artist/${artistForm.id}`}>Check out their songs!</a>
+                <br />
+                {!isNew && <button className="btn btn-warning" disabled={this.shouldNotUpdate()} onClick={(event) => updateEntry(event)}>Update</button>}
+                {!isNew && <button className="btn btn-danger" onClick={(event) => deleteEntry(event)}>Delete</button>}
+                {!isNew && <button className="btn btn-primary" disabled={this.shouldNotUpdate()} onClick={(event) => resetEntry(event)}>Reset</button>}
+                {isNew && <button className="btn btn-success" onClick={(event) => createEntry(event)}>Create New Artist</button>}
+            </form>
         )
     }
 }
 
-function ArtistItem({ artist }) {
-    const { id, name } = artist
+function Header({ artistId, isNew }) {
     return (
         <div className='artist-card row'>
-            <div className='row'>
-                <h3 id='name-text'>{name}</h3>
-            </div>
+            {!isNew &&
+                <div className='row'>
+                    <h3 id='name-text'>Primary Key: {artistId}</h3>
+                </div>
+            }
+            {isNew &&
+                <div className='row'>
+                    <h3 id='name-text'>Create New Artist</h3>
+                </div>
+            }
         </div>
     )
 }

@@ -33,8 +33,13 @@ public class SongOrmDao {
   }
 
   @GetMapping("/api/songs/artist/{artistId}")
-  public List<Song>  findAllSongsByArtist(@PathVariable("artistId") Integer artistId) {
+  public List<Song> findAllSongsByArtist(@PathVariable("artistId") Integer artistId) {
     return songRepository.findSongsByArtistId(artistId);
+  }
+
+  @GetMapping("/api/songs/playlist/{playlistId}")
+  public List<Song> findAllSongsByPlaylist(@PathVariable("playlistId") Integer playlistId) {
+    return songRepository.findSongsByPlaylistId(playlistId);
   }
 
   @PutMapping("/api/songs/{songId}/{artistId}")
