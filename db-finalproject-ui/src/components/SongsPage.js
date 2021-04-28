@@ -1,5 +1,8 @@
 import React from 'react'
 import { getSongsAPI, getSongsByArtistIdAPI } from '../utils/api'
+import { CreateButton, EditButton } from './BootstrapComponents'
+import { Button, ListGroup } from 'react-bootstrap'
+
 
 export default class SongsPage extends React.Component {
 
@@ -63,18 +66,8 @@ export default class SongsPage extends React.Component {
             <React.Fragment>
                 {!this.props.isFiltered && <h1>Songs List</h1>}
                 {this.props.isFiltered && <h1>Songs List for Artist Id: {this.state.artistId}</h1>}
-                <a href='/songs/edit'><button>Create Song</button></a>
-                <ul>
-                    {this.state.songs.map((song) => {
-                        return (
-                            <li key={song.id}>
-                                <SongListItem
-                                    song={song}
-                                />
-                            </li>
-                        )
-                    })}
-                </ul>
+                <a href='/songs/edit'><CreateButton>Create Song</CreateButton></a>
+                <SongListItems songs={this.state.songs} />
             </React.Fragment>
         )
     }
@@ -86,14 +79,31 @@ function toTime(sec) {
     return min + ":" + sec
 }
 
-export function SongListItem({ song }) {
-    const { id, content, explicit, language, name, length, artist} = song
+export function SongListItems({ songs, isInPlaylist, removeSong }) {
     return (
-        <div className='song-card row'>
-            <div className='row'>
+        <ListGroup className='listgroup'>
+            {songs.map((song) => {
+                return (
+                    <ListGroup.Item>
+                        <SongListItem song={song} />
+                        {/* <button onClick={(event) => this.removeSong(event, song.id)}>Remove Song From Playlist</button> */}
+                        {isInPlaylist && <Button variant="outline-danger" size="sm" onClick={(event) => removeSong(event, song.id)}>Remove Song From Playlist</Button>}
+
+                    </ListGroup.Item>
+                )
+            })}
+        </ListGroup>
+    )
+}
+
+export function SongListItem({ song }) {
+    const { id, content, explicit, language, name, length, artist } = song
+    return (
+        <div className='song-card'>
+            <div className='row-no'>
                 <h3 id='name-text'>{name} - <a href={`/artists/edit/${artist.id}`}>{artist.name}</a></h3>
                 <h3 id='name-text'>{toTime(length)}</h3>
-                <a href={`/songs/edit/${id}`}><button>Edit</button></a>
+                <a href={`/songs/edit/${id}`}><EditButton>Edit</EditButton></a>
             </div>
         </div>
     )

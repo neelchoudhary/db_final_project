@@ -11,7 +11,6 @@ import PlaylistsPage from './components/PlaylistsPage';
 import PlaylistsEditPage from './components/PlaylistsEditPage';
 import HomePage from './components/HomePage';
 
-
 function App() {
   return (
     <div className="App">

@@ -1,5 +1,7 @@
 import React from 'react'
-import { getSongByIdAPI, updateSongByIdAPI, deleteSongByIdAPI, createSongAPI, getArtistsAPI } from '../utils/api'
+import { getSongByIdAPI, updateSongByIdAPI, deleteSongByIdAPI, createSongAPI, getArtistsAPI, getSongLanguagesAPI } from '../utils/api'
+import { BackButton } from './BootstrapComponents'
+import { Button } from 'react-bootstrap'
 
 
 export default class SongsEditPage extends React.Component {
@@ -13,6 +15,7 @@ export default class SongsEditPage extends React.Component {
             songForm: {},
             isNew: window.location.pathname.split("/")[3] === undefined,
             artists: [],
+            languages: [],
         }
 
         this.getSong = this.getSong.bind(this)
@@ -20,14 +23,15 @@ export default class SongsEditPage extends React.Component {
         this.deleteSong = this.deleteSong.bind(this)
         this.createSong = this.createSong.bind(this)
         this.getArtists = this.getArtists.bind(this)
+        this.getSongLanguages = this.getSongLanguages.bind(this)
     }
 
     async componentDidMount() {
         if (!this.state.isNew) {
             await this.getSong(this.state.songId)
-        } else {
-            await this.getArtists()
         }
+        await this.getArtists()
+        await this.getSongLanguages()
     }
 
     handleChange = (event, field) => {
@@ -56,7 +60,7 @@ export default class SongsEditPage extends React.Component {
     update = async (event) => {
         event.preventDefault()
         console.log("UPDATE ENTRY")
-        await this.updateSong(this.state.songId, this.state.songForm)
+        await this.updateSong(this.state.songId, this.state.songForm.artistId, this.state.songForm)
     }
 
     delete = async (event) => {
@@ -88,7 +92,25 @@ export default class SongsEditPage extends React.Component {
             content: obj['content'],
             language: obj['language'],
             artist: obj['artist'],
+            artistId: obj['artist']['id'],
         }
+    }
+
+    async getSongLanguages() {
+        console.log("Fetching Song Languages")
+        await getSongLanguagesAPI()
+            .then(async (languages) => {
+                console.log(languages)
+                this.setState({
+                    languages: languages
+                })
+            })
+            .catch((error) => {
+                console.warn("Error fetching languages: " + error)
+                // this.setState({
+                //     error: 'There was an error fetching the artist info.'
+                // })
+            })
     }
 
     async getArtists() {
@@ -126,9 +148,10 @@ export default class SongsEditPage extends React.Component {
             })
     }
 
-    async updateSong(songId, song) {
+    async updateSong(songId, artistId, song) {
         console.log("Updating Song..")
-        await updateSongByIdAPI(songId, song)
+        console.log(artistId)
+        await updateSongByIdAPI(songId, artistId, song)
             .then(async (song) => {
                 console.log(song)
                 this.setState({
@@ -182,12 +205,12 @@ export default class SongsEditPage extends React.Component {
         return (
             <React.Fragment>
                 <h1>Song Edit Page</h1>
-                <a href='/songs'><button>Back to Songs List</button></a>
+                <a href='/songs'><BackButton>Back to Songs List</BackButton></a>
                 <div>
-                    <Header songId={this.state.songId} isNew={this.state.isNew} />
+                    <Header songId={this.state.songId} isNew={this.state.isNew} songForm={this.state.songForm} />
                     <SongEditForm isNew={this.state.isNew} songForm={this.state.songForm} songId={this.state.songId} song={this.state.song}
                         handleChange={this.handleChange} handleCheckbox={this.handleCheckbox} resetEntry={this.reset} updateEntry={this.update}
-                        deleteEntry={this.delete} createEntry={this.create} artists={this.state.artists} />
+                        deleteEntry={this.delete} createEntry={this.create} artists={this.state.artists} languages={this.state.languages} />
                 </div>
             </React.Fragment>
         )
@@ -202,37 +225,40 @@ class SongEditForm extends React.Component {
 
     shouldNotUpdate = () => {
         console.log(this.props.songForm)
-        console.log(this.props.songForm.artist)
+
         return false
     }
 
     render() {
-        const { isNew, songForm, handleChange, handleCheckbox, resetEntry, updateEntry, deleteEntry, createEntry, artists } = this.props
+        const { isNew, songForm, handleChange, handleCheckbox, resetEntry, updateEntry, deleteEntry, createEntry, artists, languages } = this.props
         return (
             <form id='edit-form' class='col'>
+                {!isNew && <a href={songForm.content} target="_blank">Play Song</a>}
+                {!isNew && <a href={`/artists/edit/${songForm.artistId}`} target="_blank">Artist Songs</a>}
+
                 <label htmlFor="1">Name</label>
-                <input required readOnly={!isNew} id="1" value={songForm.name} className="form-control" onChange={(event) => handleChange(event, "name")} />
+                <input required id="1" value={songForm.name} className="form-control" onChange={(event) => handleChange(event, "name")} />
+
                 <label htmlFor="2">Length (in Seconds)</label>
-                <input required readOnly={!isNew} id="2" value={songForm.length} className="form-control" type="number" onChange={(event) => handleChange(event, "length")} />
+                <input required id="2" value={songForm.length} className="form-control" type="number" onChange={(event) => handleChange(event, "length")} />
+
                 <label htmlFor="3">Language</label>
-
-                <select required disabled={!isNew} id="3" value={songForm.language} onChange={(event) => handleChange(event, "language")}>
+                <select required id="3" value={songForm.language} onChange={(event) => handleChange(event, "language")}>
                     <option value=""></option>
-                    <option value="ENGLISH">ENGLISH</option>
-                    <option value="FRENCH">FRENCH</option>
-                    <option value="HINDI">HINDI</option>
-                    <option value="KOREAN">KOREAN</option>
-                    <option value="MANDARIN">MANDARIN</option>
-                    <option value="SPANISH">SPANISH</option>
-                    <option value="OTHER">OTHER</option>
+                    {languages.map((language, index) => {
+                        return (
+                            <option key={index} value={language}>{language}</option>
+                        )
+                    })}
                 </select>
-                <label htmlFor="4">Explicit</label>
-                <input readOnly={!isNew} id="4" type='checkbox' checked={songForm.explicit} onClick={(event) => handleCheckbox(event, "explicit")} />
-                <label htmlFor="5">Artist</label>
-                {!isNew && songForm.artist !== undefined &&
-                    <a href={`/artists/edit/${songForm.artist.id}`}><p id="5" className="form-control">{songForm.artist.name}</p></a>}
+                {/* <br /> */}
 
-                {isNew && <select required disabled={!isNew} id="3" value={songForm.artistId} onChange={(event) => handleChange(event, "artistId")}>
+                <label htmlFor="4">Explicit</label>
+                <input id="4" type='checkbox' checked={songForm.explicit} onClick={(event) => handleCheckbox(event, "explicit")} />
+                {/* <br /> */}
+
+                <label htmlFor="5">Artist</label>
+                {<select required id="3" value={songForm.artistId} onChange={(event) => handleChange(event, "artistId")}>
                     <option value=""></option>
                     {artists.map((artist, index) => {
                         return (
@@ -241,35 +267,33 @@ class SongEditForm extends React.Component {
                     })}
                 </select>}
 
-                {!isNew && <label htmlFor="6">Content</label>}
-                {!isNew && <a href={songForm.content} target="_blank"><button>Play Song</button></a>}
-                {isNew && <label htmlFor="6">Song URL</label>}
-                {isNew && <input required readOnly={!isNew} id="6" value={songForm.content} className="form-control" onChange={(event) => handleChange(event, "content")} />}
-
+                {/* <br /> */}
+                {<label htmlFor="6">Song URL</label>}
+                {<input required id="6" value={songForm.content} className="form-control" onChange={(event) => handleChange(event, "content")} />}
 
                 {/* <iframe width="420" height="315"
                     src={songForm.content}>
                 </iframe> */}
                 <br />
-                {false && !isNew && <button className="btn btn-warning" disabled={this.shouldNotUpdate()} onClick={(event) => updateEntry(event)}>Update</button>}
+                {!isNew && <button className="btn btn-warning" disabled={this.shouldNotUpdate()} onClick={(event) => updateEntry(event)}>Update</button>}
                 {!isNew && <button className="btn btn-danger" onClick={(event) => deleteEntry(event)}>Delete</button>}
-                {false && !isNew && <button className="btn btn-primary" disabled={this.shouldNotUpdate()} onClick={(event) => resetEntry(event)}>Reset</button>}
+                {/* {!isNew && <button className="btn btn-primary" disabled={this.shouldNotUpdate()} onClick={(event) => resetEntry(event)}>Reset</button>} */}
                 {isNew && <input value="Create New Song" type="submit" className="btn btn-success" onClick={(event) => createEntry(event)} />}
             </form>
         )
     }
 }
 
-function Header({ songId, isNew }) {
+function Header({ songId, isNew, songForm }) {
     return (
-        <div className='song-card row'>
+        <div className='header'>
             {!isNew &&
-                <div className='row'>
+                <div className='no'>
                     <h3 id='name-text'>Primary Key: {songId}</h3>
                 </div>
             }
             {isNew &&
-                <div className='row'>
+                <div className='no'>
                     <h3 id='name-text'>Create New Song</h3>
                 </div>
             }

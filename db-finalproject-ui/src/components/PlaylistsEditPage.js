@@ -1,6 +1,8 @@
 import React from 'react'
 import { getPlaylistByIdAPI, updatePlaylistByIdAPI, deletePlaylistByIdAPI, createPlaylistAPI, getUsersAPI, getSongsAPI, getSongsByPlaylistIdAPI, addSongToPlaylistAPI, removeSongFromPlaylistAPI } from '../utils/api'
-import { SongListItem } from './SongsPage'
+import { BackButton } from './BootstrapComponents'
+import { SongListItem, SongListItems } from './SongsPage'
+import { Button, DropdownButton, Dropdown } from 'react-bootstrap'
 
 
 export default class PlaylistsEditPage extends React.Component {
@@ -261,38 +263,28 @@ export default class PlaylistsEditPage extends React.Component {
         return (
             <React.Fragment>
                 <h1>Playlist Edit Page</h1>
-                <a href='/playlists'><button>Back to Playlists List</button></a>
+                <a href='/playlists'><BackButton>Back to Playlists List</BackButton></a>
                 <div className='row1'>
-                    <div>
+                    <div className='col'>
                         <Header playlistId={this.state.playlistId} isNew={this.state.isNew} playlistForm={this.state.playlistForm} />
                         <PlaylistEditForm isNew={this.state.isNew} playlistForm={this.state.playlistForm} playlistId={this.state.playlistId} playlist={this.state.playlist}
                             handleChange={this.handleChange} handleCheckbox={this.handleCheckbox} resetEntry={this.reset} updateEntry={this.update}
                             deleteEntry={this.delete} createEntry={this.create} users={this.state.users} />
                     </div>
-                    <div>
-                        <h3>Songs in Playlist</h3>
-                        <button onClick={(event) => this.addSong(event)}>Add Song</button>
-                        {<select required id="3" value={this.state.songToAdd} onChange={(event) => this.handleChange2(event, "songToAdd")}>
-                            <option value=""></option>
-                            {this.state.allSongs.map((song, index) => {
-                                return (
-                                    <option key={index} value={song.id}>{song.name} - {song.artist.name}</option>
-                                )
-                            })}
-                        </select>}
-                        <ul >
-                            {this.state.songs.map((song) => {
-                                return (
-                                    <li key={song.id}>
-                                        <SongListItem
-                                            song={song}
-                                        />
-                                        <button onClick={(event) => this.removeSong(event, song.id)}>Remove Song From Playlist</button>
-                                    </li>
-                                )
-                            })}
-                        </ul>
-                    </div>
+                    {!this.state.isNew &&
+                        <div className='col2'>
+                            <h3>Songs in Playlist</h3>
+                            {<select required id="3" value={this.state.songToAdd} onChange={(event) => this.handleChange2(event, "songToAdd")}>
+                                <option value=""></option>
+                                {this.state.allSongs.map((song, index) => {
+                                    return (
+                                        <option key={index} value={song.id}>{song.name} - {song.artist.name}</option>
+                                    )
+                                })}
+                            </select>}
+                            <Button variant="info" onClick={(event) => this.addSong(event)}>Add Song</Button>
+                            <SongListItems songs={this.state.songs} isInPlaylist={true} removeSong={this.removeSong}/>
+                        </div>}
                 </div>
             </React.Fragment>
         )
@@ -307,9 +299,12 @@ class PlaylistEditForm extends React.Component {
     }
 
     shouldNotUpdate = () => {
-        return this.props.playlistForm.title === this.props.playlist.title
-            && this.props.playlistForm.description === this.props.playlist.description
-            && this.props.playlistForm.userId === this.props.playlist.userId
+        // return this.props.playlistForm.title === this.props.playlist.title
+        //     && this.props.playlistForm.description === this.props.playlist.description
+        //     && this.props.playlistForm.userId === this.props.playlist.userId
+
+        return false
+
     }
 
     render() {
@@ -321,18 +316,19 @@ class PlaylistEditForm extends React.Component {
                 <label htmlFor="2">Description</label>
                 <input required id="2" value={playlistForm.description} className="form-control" onChange={(event) => handleChange(event, "description")} />
                 <label htmlFor="3">User</label>
-                {<select required id="3" value={playlistForm.userId} onChange={(event) => handleChange(event, "userId")}>
+                <select required className='form-select' id="3" value={playlistForm.userId} onChange={(event) => handleChange(event, "userId")}>
                     <option value=""></option>
                     {users.map((user, index) => {
                         return (
                             <option key={index} value={user.id}>{user.id} - {user.firstName} {user.lastName}</option>
                         )
                     })}
-                </select>}
+                </select>
+                <br />
                 <br />
                 {!isNew && <button className="btn btn-warning" disabled={this.shouldNotUpdate()} onClick={(event) => updateEntry(event)}>Update</button>}
                 {!isNew && <button className="btn btn-danger" onClick={(event) => deleteEntry(event)}>Delete</button>}
-                {!isNew && <button className="btn btn-primary" disabled={this.shouldNotUpdate()} onClick={(event) => resetEntry(event)}>Reset</button>}
+                {/* {!isNew && <button className="btn btn-primary" disabled={this.shouldNotUpdate()} onClick={(event) => resetEntry(event)}>Reset</button>} */}
                 {isNew && <input value="Create New Playlist" type="submit" className="btn btn-success" onClick={(event) => createEntry(event)} />}
             </form>
         )
@@ -341,7 +337,7 @@ class PlaylistEditForm extends React.Component {
 
 function Header({ playlistId, isNew, playlistForm }) {
     return (
-        <div className='playlist-card row'>
+        <div className='header'>
             {!isNew &&
                 <div>
                     <h3 id='name-text'>Primary Key: {playlistId}</h3>

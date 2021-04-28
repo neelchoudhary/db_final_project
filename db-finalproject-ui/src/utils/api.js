@@ -1,5 +1,11 @@
 const server_name = "http://localhost:8080/api"
 
+// Retrieve all song languages enum from the server
+export const getSongLanguagesAPI = () =>
+    fetch(`${server_name}/songlanguages`)
+        .then(response => response.json())
+
+
 // Retrieve all artists from the server
 export const getArtistsAPI = () =>
     fetch(`${server_name}/artists`)
@@ -86,8 +92,8 @@ export const getSongByIdAPI = (songId) =>
         .then(response => response.json())
 
 // Update song by id from the server
-export const updateSongByIdAPI = (songId, song) =>
-    fetch(`${server_name}/songs/${songId}`, {
+export const updateSongByIdAPI = (songId, artistId, song) =>
+    fetch(`${server_name}/songs/${songId}/${artistId}`, {
         method: 'PUT',
         body: JSON.stringify(song),
         headers: { 'content-type': 'application/json' }

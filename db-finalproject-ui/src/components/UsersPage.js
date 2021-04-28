@@ -1,5 +1,7 @@
 import React from 'react'
 import { getUsersAPI } from '../utils/api'
+import { CreateButton, EditButton } from './BootstrapComponents'
+import { ListGroup } from 'react-bootstrap'
 
 export default class UsersPage extends React.Component {
 
@@ -38,18 +40,19 @@ export default class UsersPage extends React.Component {
         return (
             <React.Fragment>
                 <h1>Users List</h1>
-                <a href='/users/edit'><button>Create User</button></a>
-                <ul>
+                <a href='/users/edit'><CreateButton>Create User</CreateButton></a>
+                <ListGroup className='listgroup'>
                     {this.state.users.map((user) => {
                         return (
-                            <li key={user.id}>
-                                <UserListItem
-                                    user={user}
-                                />
-                            </li>
+                            <ListGroup.Item><UserListItem user={user}/></ListGroup.Item>
+                            // <li key={artist.id}>
+                            //     <ArtistListItem
+                            //         artist={artist}
+                            //     />
+                            // </li>
                         )
                     })}
-                </ul>
+                </ListGroup>
             </React.Fragment>
         )
     }
@@ -58,10 +61,10 @@ export default class UsersPage extends React.Component {
 function UserListItem({ user }) {
     const { id, firstName, lastName, email} = user
     return (
-        <div className='user-card row'>
-            <div className='row'>
+        <div className='user-card'>
+            <div className='row-no'>
                 <h3 id='name-text'>{firstName} {lastName}</h3>
-                <a href={`/users/edit/${id}`}><button>Edit</button></a>
+                <a href={`/users/edit/${id}`}><EditButton>Edit</EditButton></a>
             </div>
         </div>
     )

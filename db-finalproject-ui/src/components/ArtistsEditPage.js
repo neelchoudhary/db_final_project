@@ -1,6 +1,8 @@
 import React from 'react'
 import { getArtistByIdAPI, updateArtistByIdAPI, deleteArtistByIdAPI, createArtistAPI, getSongsByArtistIdAPI } from '../utils/api'
-import { SongListItem } from './SongsPage'
+import { ArtistListItems } from './ArtistsPage'
+import { BackButton } from './BootstrapComponents'
+import { SongListItem, SongListItems } from './SongsPage'
 
 
 export default class ArtistsEditPage extends React.Component {
@@ -41,7 +43,7 @@ export default class ArtistsEditPage extends React.Component {
     reset = (event) => {
         event.preventDefault()
         this.setState({
-            artistForm: Object.create(this.state.artist)
+            artistForm: this.copyObj(this.state.artist)
         })
     }
 
@@ -73,14 +75,20 @@ export default class ArtistsEditPage extends React.Component {
         }
     }
 
+    copyObj = (obj) => {
+        return {
+            name: obj['name'],
+        }
+    }
+
     async getArtist(artistId) {
         console.log("Fetching Artist..")
         await getArtistByIdAPI(artistId)
             .then(async (artist) => {
                 console.log(artist)
                 this.setState({
-                    artist: Object.create(artist),
-                    artistForm: Object.create(artist)
+                    artist: this.copyObj(artist),
+                    artistForm: this.copyObj(artist)
                 })
             })
             .catch((error) => {
@@ -97,8 +105,8 @@ export default class ArtistsEditPage extends React.Component {
             .then(async (artist) => {
                 console.log(artist)
                 this.setState({
-                    artist: Object.create(artist),
-                    artistForm: Object.create(artist)
+                    artist: this.copyObj(artist),
+                    artistForm: this.copyObj(artist)
                 })
                 window.location.href = 'http://localhost:3000/artists'
             })
@@ -130,8 +138,8 @@ export default class ArtistsEditPage extends React.Component {
         await createArtistAPI(artist)
             .then(async (artist) => {
                 this.setState({
-                    artist: Object.create(artist),
-                    artistForm: Object.create(artist)
+                    artist: this.copyObj(artist),
+                    artistForm: this.copyObj(artist)
                 })
                 window.location.href = 'http://localhost:3000/artists'
             })
@@ -164,27 +172,19 @@ export default class ArtistsEditPage extends React.Component {
         return (
             <React.Fragment>
                 <h1>Artist Edit Page</h1>
-                <a href='/artists'><button>Back to Artists List</button></a>
+                <a href='/artists'><BackButton>Back to Artists List</BackButton></a>
                 <div className='row1'>
-                    <div>
+                    <div className='col'>
                         <Header artistId={this.state.artistId} isNew={this.state.isNew} />
                         <ArtistEditForm isNew={this.state.isNew} artistForm={this.state.artistForm} artistId={this.state.artistId} artist={this.state.artist}
                             handleChange={this.handleChange} resetEntry={this.reset} updateEntry={this.update} deleteEntry={this.delete} createEntry={this.create} />
                     </div>
-                    <div>
-                        <h3>Songs for Artist</h3>
-                        <ul>
-                            {this.state.songs.map((song) => {
-                                return (
-                                    <li key={song.id}>
-                                        <SongListItem
-                                            song={song}
-                                        />
-                                    </li>
-                                )
-                            })}
-                        </ul>
-                    </div>
+                    {!this.state.isNew &&
+                        <div className='col'>
+                            <h3>Songs for Artist</h3>
+                            <SongListItems songs={this.state.songs} />
+                        </div>
+                    }
                 </div>
 
             </React.Fragment>
@@ -199,7 +199,8 @@ class ArtistEditForm extends React.Component {
     }
 
     shouldNotUpdate = () => {
-        return this.props.artist["name"] === this.props.artistForm["name"]
+        // return this.props.artist["name"] === this.props.artistForm["name"]
+        return false
     }
 
     render() {
@@ -212,7 +213,7 @@ class ArtistEditForm extends React.Component {
 
                 {!isNew && <button className="btn btn-warning" disabled={this.shouldNotUpdate()} onClick={(event) => updateEntry(event)}>Update</button>}
                 {!isNew && <button className="btn btn-danger" onClick={(event) => deleteEntry(event)}>Delete</button>}
-                {!isNew && <button className="btn btn-primary" disabled={this.shouldNotUpdate()} onClick={(event) => resetEntry(event)}>Reset</button>}
+                {/* {!isNew && <button className="btn btn-primary" disabled={this.shouldNotUpdate()} onClick={(event) => resetEntry(event)}>Reset</button>} */}
                 {isNew && <button className="btn btn-success" onClick={(event) => createEntry(event)}>Create New Artist</button>}
             </form>
         )
@@ -221,14 +222,14 @@ class ArtistEditForm extends React.Component {
 
 function Header({ artistId, isNew }) {
     return (
-        <div className='artist-card row'>
+        <div className='header'>
             {!isNew &&
                 <div className='row'>
                     <h3 id='name-text'>Primary Key: {artistId}</h3>
                 </div>
             }
             {isNew &&
-                <div className='row'>
+                <div>
                     <h3 id='name-text'>Create New Artist</h3>
                 </div>
             }

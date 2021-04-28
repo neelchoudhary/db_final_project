@@ -1,5 +1,7 @@
 import React from 'react'
 import { getPlaylistsAPI, getPlaylistsByUserIdAPI } from '../utils/api'
+import { CreateButton, EditButton } from './BootstrapComponents'
+import { ListGroup } from 'react-bootstrap'
 
 export default class PlaylistsPage extends React.Component {
 
@@ -61,37 +63,38 @@ export default class PlaylistsPage extends React.Component {
             <React.Fragment>
                 {!this.props.isFiltered && <h1>Playlists List</h1>}
                 {this.props.isFiltered && <h1>Playlists List for User Id: {this.state.userId}</h1>}
-                <a href='/playlists/edit'><button>Create Playlist</button></a>
-                <ul>
-                    {this.state.playlists.map((playlist) => {
-                        return (
-                            <li key={playlist.id}>
-                                <PlaylistListItem
-                                    playlist={playlist}
-                                />
-                            </li>
-                        )
-                    })}
-                </ul>
+                <a href='/playlists/edit'><CreateButton>Create Playlist</CreateButton></a>
+                <PlaylistListItems playlists={this.state.playlists} />
             </React.Fragment>
         )
     }
 }
 
-function toTime(sec) {
-    var min = Math.floor(sec / 60)
-    var sec = sec % 60
-    return min + ":" + sec
+export function PlaylistListItems({ playlists }) {
+    return (
+        <ListGroup className='listgroup'>
+            {playlists.map((playlist) => {
+                return (
+                    <ListGroup.Item><PlaylistListItem playlist={playlist} /></ListGroup.Item>
+                    // <li key={artist.id}>
+                    //     <ArtistListItem
+                    //         artist={artist}
+                    //     />
+                    // </li>
+                )
+            })}
+        </ListGroup>
+    )
 }
 
 export function PlaylistListItem({ playlist }) {
-    const { id, user, title, description} = playlist
+    const { id, user, title, description } = playlist
     return (
-        <div className='playlist-card row'>
-            <div className='row'>
+        <div className='playlist-card'>
+            <div className='row-no'>
                 <h3 id='name-text'>{title} - created by {user.firstName}</h3>
                 <p>{description}</p>
-                <a href={`/playlists/edit/${id}`}><button>Edit</button></a>
+                <a href={`/playlists/edit/${id}`}><EditButton>Edit</EditButton></a>
             </div>
         </div>
     )

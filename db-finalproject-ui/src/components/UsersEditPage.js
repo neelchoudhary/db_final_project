@@ -1,6 +1,7 @@
 import React from 'react'
 import { getUserByIdAPI, updateUserByIdAPI, deleteUserByIdAPI, createUserAPI, getPlaylistsByUserIdAPI } from '../utils/api'
-import { PlaylistListItem } from './PlaylistsPage'
+import { BackButton } from './BootstrapComponents'
+import { PlaylistListItem, PlaylistListItems } from './PlaylistsPage'
 
 
 export default class UsersEditPage extends React.Component {
@@ -172,16 +173,18 @@ export default class UsersEditPage extends React.Component {
         return (
             <React.Fragment>
                 <h1>User Edit Page</h1>
-                <a href='/users'><button>Back to Users List</button></a>
+                <a href='/users'><BackButton>Back to Users List</BackButton></a>
                 <div className='row1'>
-                    <div>
+                    <div className='col'>
                         <Header userId={this.state.userId} isNew={this.state.isNew} />
                         <UserEditForm isNew={this.state.isNew} userForm={this.state.userForm} userId={this.state.userId} user={this.state.user}
                             handleChange={this.handleChange} resetEntry={this.reset} updateEntry={this.update} deleteEntry={this.delete} createEntry={this.create} />
                     </div>
-                    <div>
-                        <h3>Playlists for User</h3>
-                        <ul >
+                    {!this.state.isNew &&
+                        <div className='col'>
+                            <h3>Playlists for User</h3>
+                            <PlaylistListItems playlists={this.state.playlists} />
+                            {/* <ul >
                             {this.state.playlists.map((playlist) => {
                                 return (
                                     <li key={playlist.id}>
@@ -191,8 +194,8 @@ export default class UsersEditPage extends React.Component {
                                     </li>
                                 )
                             })}
-                        </ul>
-                    </div>
+                        </ul> */}
+                        </div>}
                 </div>
 
             </React.Fragment>
@@ -207,9 +210,10 @@ class UserEditForm extends React.Component {
     }
 
     shouldNotUpdate = () => {
-        return this.props.user["firstName"] === this.props.userForm["firstName"] &&
-            this.props.user["lastName"] === this.props.userForm["lastName"] &&
-            this.props.user["email"] === this.props.userForm["email"]
+        // return this.props.user["firstName"] === this.props.userForm["firstName"] &&
+        //     this.props.user["lastName"] === this.props.userForm["lastName"] &&
+        //     this.props.user["email"] === this.props.userForm["email"]
+        return false
     }
 
     render() {
@@ -226,7 +230,7 @@ class UserEditForm extends React.Component {
                 <br />
                 {!isNew && <button className="btn btn-warning" disabled={this.shouldNotUpdate()} onClick={(event) => updateEntry(event)}>Update</button>}
                 {!isNew && <button className="btn btn-danger" onClick={(event) => deleteEntry(event)}>Delete</button>}
-                {!isNew && <button className="btn btn-primary" disabled={this.shouldNotUpdate()} onClick={(event) => resetEntry(event)}>Reset</button>}
+                {/* {!isNew && <button className="btn btn-primary" disabled={this.shouldNotUpdate()} onClick={(event) => resetEntry(event)}>Reset</button>} */}
                 {isNew && <button className="btn btn-success" onClick={(event) => createEntry(event)}>Create New User</button>}
             </form>
         )
@@ -235,14 +239,14 @@ class UserEditForm extends React.Component {
 
 function Header({ userId, isNew }) {
     return (
-        <div className='user-card row'>
+        <div className='header'>
             {!isNew &&
-                <div className='row'>
+                <div className='no'>
                     <h3 id='name-text'>Primary Key: {userId}</h3>
                 </div>
             }
             {isNew &&
-                <div className='row'>
+                <div className='no'>
                     <h3 id='name-text'>Create New User</h3>
                 </div>
             }
