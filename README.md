@@ -1,6 +1,9 @@
 # db_final_project
 A Music Player
 
+WRITE UP: https://github.com/neelchoudhary/db_final_project/blob/main/Project%20Description.md
+[Project Description](https://github.com/neelchoudhary/db_final_project/blob/main/Project%20Description.md)
+
 To set up & run: 
 - Clone the repo.
 - Import sql files from Data Dump folder into MySqlWorkbench. Schema is called 'db_final'.
