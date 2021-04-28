@@ -1,7 +1,7 @@
 # db_final_project
 A Music Player
 
-[Project Description](https://github.com/neelchoudhary/db_final_project/blob/main/Project%20Description.md)
+[PROJECT DESCRIPTION](https://github.com/neelchoudhary/db_final_project/blob/main/Project%20Description.md)
 
 To set up & run: 
 - Clone the repo.
