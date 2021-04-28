@@ -25,8 +25,8 @@ The solution statements to the problem statements above are, respectively:
  - Our group has discovered that the song “Black Swan” by BTS is sung in Korean.
  - Our group has discovered that the artist of “Wicked Games” is The Weeknd.
  - Our group has discovered users have uploaded 2 songs by BTS.
- - Our group has discovered that the user Jessie Wang has 2 playlists.
- - Our group has discovered that the playlist “LoFi HipHop Jams” has DNA by BTS and Wicked Games by The Weeknd in it. 
+ - Our group has discovered that the user Jessie Wang has 1 playlist.
+ - Our group has discovered that the playlist “BTS Playlist” has DNA and Black Swanby BTS in it. 
  
  ### 3. Users
 Typical users of our application could be anyone of any age and background who wants a place to listen to and keep track of songs that they enjoy listening to. Of course, they would need to be comfortable with the concept of MP3s, Youtube, and the web in general. 
