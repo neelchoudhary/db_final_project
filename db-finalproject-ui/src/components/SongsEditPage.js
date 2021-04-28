@@ -1,6 +1,6 @@
 import React from 'react'
 import { getSongByIdAPI, updateSongByIdAPI, deleteSongByIdAPI, createSongAPI, getArtistsAPI, getSongLanguagesAPI } from '../utils/api'
-import { BackButton } from './BootstrapComponents'
+import { BackButton, PlayButton, TopButton } from './BootstrapComponents'
 import { Button } from 'react-bootstrap'
 
 
@@ -206,6 +206,9 @@ export default class SongsEditPage extends React.Component {
             <React.Fragment>
                 <h1>Song Edit Page</h1>
                 <a href='/songs'><BackButton>Back to Songs List</BackButton></a>
+                {!this.state.isNew && <a href={`/artists/edit/${this.state.songForm.artistId}`}><TopButton target="_blank">Artist Songs</TopButton></a>}
+                {!this.state.isNew && <a href={this.state.songForm.content} target="_blank"><PlayButton target="_blank">Play Song</PlayButton></a>}
+
                 <div>
                     <Header songId={this.state.songId} isNew={this.state.isNew} songForm={this.state.songForm} />
                     <SongEditForm isNew={this.state.isNew} songForm={this.state.songForm} songId={this.state.songId} song={this.state.song}
@@ -233,9 +236,6 @@ class SongEditForm extends React.Component {
         const { isNew, songForm, handleChange, handleCheckbox, resetEntry, updateEntry, deleteEntry, createEntry, artists, languages } = this.props
         return (
             <form id='edit-form' class='col'>
-                {!isNew && <a href={songForm.content} target="_blank">Play Song</a>}
-                {!isNew && <a href={`/artists/edit/${songForm.artistId}`} target="_blank">Artist Songs</a>}
-
                 <label htmlFor="1">Name</label>
                 <input required id="1" value={songForm.name} className="form-control" onChange={(event) => handleChange(event, "name")} />
 
@@ -243,7 +243,7 @@ class SongEditForm extends React.Component {
                 <input required id="2" value={songForm.length} className="form-control" type="number" onChange={(event) => handleChange(event, "length")} />
 
                 <label htmlFor="3">Language</label>
-                <select required id="3" value={songForm.language} onChange={(event) => handleChange(event, "language")}>
+                <select required id="3" className='form-control' value={songForm.language} onChange={(event) => handleChange(event, "language")}>
                     <option value=""></option>
                     {languages.map((language, index) => {
                         return (
@@ -251,14 +251,12 @@ class SongEditForm extends React.Component {
                         )
                     })}
                 </select>
-                {/* <br /> */}
 
                 <label htmlFor="4">Explicit</label>
-                <input id="4" type='checkbox' checked={songForm.explicit} onClick={(event) => handleCheckbox(event, "explicit")} />
-                {/* <br /> */}
+                <input id="4" className='checkbox-input' type='checkbox' checked={songForm.explicit} onClick={(event) => handleCheckbox(event, "explicit")} />
 
                 <label htmlFor="5">Artist</label>
-                {<select required id="3" value={songForm.artistId} onChange={(event) => handleChange(event, "artistId")}>
+                {<select required id="3" className='form-control' value={songForm.artistId} onChange={(event) => handleChange(event, "artistId")}>
                     <option value=""></option>
                     {artists.map((artist, index) => {
                         return (
@@ -267,7 +265,6 @@ class SongEditForm extends React.Component {
                     })}
                 </select>}
 
-                {/* <br /> */}
                 {<label htmlFor="6">Song URL</label>}
                 {<input required id="6" value={songForm.content} className="form-control" onChange={(event) => handleChange(event, "content")} />}
 

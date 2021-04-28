@@ -1,6 +1,6 @@
 import React from 'react'
 import { getSongsAPI, getSongsByArtistIdAPI } from '../utils/api'
-import { CreateButton, EditButton } from './BootstrapComponents'
+import { CreateButton, EditButton, PlayButton, TopButton } from './BootstrapComponents'
 import { Button, ListGroup } from 'react-bootstrap'
 
 
@@ -87,7 +87,7 @@ export function SongListItems({ songs, isInPlaylist, removeSong }) {
                     <ListGroup.Item>
                         <SongListItem song={song} />
                         {/* <button onClick={(event) => this.removeSong(event, song.id)}>Remove Song From Playlist</button> */}
-                        {isInPlaylist && <Button variant="outline-danger" size="sm" onClick={(event) => removeSong(event, song.id)}>Remove Song From Playlist</Button>}
+                        {isInPlaylist && <Button className='btn-up' variant="outline-danger" size="sm" onClick={(event) => removeSong(event, song.id)}>Remove Song From Playlist</Button>}
 
                     </ListGroup.Item>
                 )
@@ -100,11 +100,15 @@ export function SongListItem({ song }) {
     const { id, content, explicit, language, name, length, artist } = song
     return (
         <div className='song-card'>
-            <div className='row-no'>
-                <h3 id='name-text'>{name} - <a href={`/artists/edit/${artist.id}`}>{artist.name}</a></h3>
-                <h3 id='name-text'>{toTime(length)}</h3>
-                <a href={`/songs/edit/${id}`}><EditButton>Edit</EditButton></a>
+            <h3 id='name-text'>{name} - <a href={`/artists/edit/${artist.id}`}>{artist.name}</a></h3>
+            <div className='sub row1'>
+                <p id='name-text'>{toTime(length)}</p>
+                <p id='name-text'>{language}</p>
+                {explicit && <p className='explicit-text'>EXPLICIT</p>}
             </div>
+            <a href={content} target='_blank'><PlayButton>Play Song</PlayButton></a>
+            {/* <a href={`/artists/edit/${artist.id}`}><TopButton>View Artist</TopButton></a> */}
+            <a href={`/songs/edit/${id}`}><EditButton>Edit</EditButton></a>
         </div>
     )
 }

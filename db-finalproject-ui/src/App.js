@@ -15,7 +15,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <p>Music Player</p>
+        <p className='header-title'>Stotipy</p>
         <div className='header-links'>
           <a href='/artists'>Artists List</a>
           <a href='/songs'>Songs List</a>

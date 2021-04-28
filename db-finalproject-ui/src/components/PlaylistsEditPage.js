@@ -1,7 +1,7 @@
 import React from 'react'
 import { getPlaylistByIdAPI, updatePlaylistByIdAPI, deletePlaylistByIdAPI, createPlaylistAPI, getUsersAPI, getSongsAPI, getSongsByPlaylistIdAPI, addSongToPlaylistAPI, removeSongFromPlaylistAPI } from '../utils/api'
-import { BackButton } from './BootstrapComponents'
-import { SongListItem, SongListItems } from './SongsPage'
+import { BackButton, TopButton } from './BootstrapComponents'
+import { SongListItems } from './SongsPage'
 import { Button, DropdownButton, Dropdown } from 'react-bootstrap'
 
 
@@ -264,6 +264,7 @@ export default class PlaylistsEditPage extends React.Component {
             <React.Fragment>
                 <h1>Playlist Edit Page</h1>
                 <a href='/playlists'><BackButton>Back to Playlists List</BackButton></a>
+                {this.state.playlistForm.user !== undefined && <a href={`/users/edit/${this.state.playlistForm.user.id}`}><TopButton>View {this.state.playlistForm.user.firstName}'s Profile</TopButton></a>}
                 <div className='row1'>
                     <div className='col'>
                         <Header playlistId={this.state.playlistId} isNew={this.state.isNew} playlistForm={this.state.playlistForm} />
@@ -272,17 +273,17 @@ export default class PlaylistsEditPage extends React.Component {
                             deleteEntry={this.delete} createEntry={this.create} users={this.state.users} />
                     </div>
                     {!this.state.isNew &&
-                        <div className='col2'>
+                        <div className='col'>
                             <h3>Songs in Playlist</h3>
-                            {<select required id="3" value={this.state.songToAdd} onChange={(event) => this.handleChange2(event, "songToAdd")}>
-                                <option value=""></option>
+                            {<select className='form-control' required id="3" value={this.state.songToAdd} onChange={(event) => this.handleChange2(event, "songToAdd")}>
+                                <option value="">Choose Song To Add</option>
                                 {this.state.allSongs.map((song, index) => {
                                     return (
                                         <option key={index} value={song.id}>{song.name} - {song.artist.name}</option>
                                     )
                                 })}
                             </select>}
-                            <Button variant="info" onClick={(event) => this.addSong(event)}>Add Song</Button>
+                            <Button className='btn-up' variant="info" onClick={(event) => this.addSong(event)}>Add Song</Button>
                             <SongListItems songs={this.state.songs} isInPlaylist={true} removeSong={this.removeSong}/>
                         </div>}
                 </div>
@@ -316,7 +317,7 @@ class PlaylistEditForm extends React.Component {
                 <label htmlFor="2">Description</label>
                 <input required id="2" value={playlistForm.description} className="form-control" onChange={(event) => handleChange(event, "description")} />
                 <label htmlFor="3">User</label>
-                <select required className='form-select' id="3" value={playlistForm.userId} onChange={(event) => handleChange(event, "userId")}>
+                <select required className='form-control' id="3" value={playlistForm.userId} onChange={(event) => handleChange(event, "userId")}>
                     <option value=""></option>
                     {users.map((user, index) => {
                         return (
@@ -324,7 +325,6 @@ class PlaylistEditForm extends React.Component {
                         )
                     })}
                 </select>
-                <br />
                 <br />
                 {!isNew && <button className="btn btn-warning" disabled={this.shouldNotUpdate()} onClick={(event) => updateEntry(event)}>Update</button>}
                 {!isNew && <button className="btn btn-danger" onClick={(event) => deleteEntry(event)}>Delete</button>}
@@ -341,7 +341,7 @@ function Header({ playlistId, isNew, playlistForm }) {
             {!isNew &&
                 <div>
                     <h3 id='name-text'>Primary Key: {playlistId}</h3>
-                    {playlistForm.user !== undefined && <a href={`/users/edit/${playlistForm.user.id}`}><h3>View {playlistForm.user.firstName}'s Profile</h3></a>}
+                    {/* {playlistForm.user !== undefined && <a href={`/users/edit/${playlistForm.user.id}`}><h3>View {playlistForm.user.firstName}'s Profile</h3></a>} */}
                 </div>
             }
             {isNew &&
