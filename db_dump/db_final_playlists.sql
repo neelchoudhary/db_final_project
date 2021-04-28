@@ -31,7 +31,7 @@ CREATE TABLE `playlists` (
   UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `playlists_2_users_idx` (`user_id`),
   CONSTRAINT `playlists_2_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -40,7 +40,7 @@ CREATE TABLE `playlists` (
 
 LOCK TABLES `playlists` WRITE;
 /*!40000 ALTER TABLE `playlists` DISABLE KEYS */;
-INSERT INTO `playlists` VALUES (1,1,'LoFi HipHop Jams','This is a generic playlist'),(2,2,'Lolla 2021','Playlist for lollapalooza'),(4,1,'A dumb playlist','Ahhhh description'),(8,5,'A NEW PLATLISY','mjoo');
+INSERT INTO `playlists` VALUES (2,2,'Lolla 2021','Playlist for lollapalooza'),(4,1,'BTS Playlist','BTS!!!!'),(8,5,'English Radio Songs','just some english songs'),(9,2,'Asia','songs from China, India, Korea, etc.');
 /*!40000 ALTER TABLE `playlists` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -53,4 +53,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-04-26  2:42:11
+-- Dump completed on 2021-04-27 23:04:24

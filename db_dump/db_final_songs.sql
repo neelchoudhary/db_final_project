@@ -36,7 +36,7 @@ CREATE TABLE `songs` (
   KEY `songs_2_languages_idx` (`language`),
   CONSTRAINT `songs_2_artists` FOREIGN KEY (`artist_id`) REFERENCES `artists` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `songs_2_languages` FOREIGN KEY (`language`) REFERENCES `song_languages` (`name`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -45,7 +45,7 @@ CREATE TABLE `songs` (
 
 LOCK TABLES `songs` WRITE;
 /*!40000 ALTER TABLE `songs` DISABLE KEYS */;
-INSERT INTO `songs` VALUES (2,'DNA','https://www.youtube.com/watch?v=MBdVXkSdhwU&ab_channel=HYBELABELS',1,255,0,'KOREAN'),(4,'Wicked Games','https://www.youtube.com/watch?v=O1OTWCd40bc&ab_channel=TheWeekndVEVO',2,281,1,'ENGLISH'),(5,'Black Swan','https://www.youtube.com/watch?v=0lapF4DQPKQ&ab_channel=HYBELABELS',1,217,0,'KOREAN'),(6,'House Of Balloons / Glass Table Girls','https://www.youtube.com/watch?v=8ex38L8xtNI&ab_channel=TheWeeknd',2,412,1,'ENGLISH'),(10,'The Hills','youtube',2,420,1,'ENGLISH');
+INSERT INTO `songs` VALUES (2,'DNA','https://www.youtube.com/watch?v=MBdVXkSdhwU&ab_channel=HYBELABELS',1,255,0,'KOREAN'),(4,'Wicked Games','https://www.youtube.com/watch?v=O1OTWCd40bc&ab_channel=TheWeekndVEVO',2,281,1,'ENGLISH'),(5,'Black Swan','https://www.youtube.com/watch?v=0lapF4DQPKQ&ab_channel=HYBELABELS',1,217,0,'KOREAN'),(6,'House Of Balloons / Glass Table Girls','https://www.youtube.com/watch?v=8ex38L8xtNI&ab_channel=TheWeeknd',2,412,1,'ENGLISH'),(10,'The Hills','youtube',2,420,1,'ENGLISH'),(15,'Fix You','https://www.youtube.com/watch?v=k4V3Mo61fJM&ab_channel=Coldplay',17,320,0,'ENGLISH'),(18,'Wild Horses','https://www.youtube.com/watch?v=5xsCONzzTRw',21,842,0,'ENGLISH'),(19,'Belle','https://www.youtube.com/watch?v=LnRF3fb_HjU',22,74923,0,'FRENCH'),(20,'Deewani Mastani','https://www.youtube.com/watch?v=h6lHUn20J5g',23,2123,0,'HINDI'),(21,'Chikni Chameli','https://www.youtube.com/watch?v=MQM7CNoAsBI',23,4230,0,'HINDI'),(22,'三生三世','https://www.youtube.com/watch?v=s-CcFyyPJiY',24,8940,0,'MANDARIN'),(23,'Oye Pablo','https://www.youtube.com/watch?v=llHSeXEcDUo',25,84902,0,'SPANISH'),(24,'English Folk Song Suite','https://www.youtube.com/watch?v=D0sC4xbyT5c',26,9393,0,'OTHER'),(25,'Viva La Vida','https://www.youtube.com/watch?v=dvgZkm1xWPE',17,200,0,'ENGLISH');
 /*!40000 ALTER TABLE `songs` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -58,4 +58,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-04-26  2:42:14
+-- Dump completed on 2021-04-27 23:04:25

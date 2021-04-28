@@ -38,7 +38,7 @@ CREATE TABLE `playlist_songs` (
 
 LOCK TABLES `playlist_songs` WRITE;
 /*!40000 ALTER TABLE `playlist_songs` DISABLE KEYS */;
-INSERT INTO `playlist_songs` VALUES (1,2),(1,4),(2,5),(2,6);
+INSERT INTO `playlist_songs` VALUES (4,2),(4,5),(9,2),(9,5),(9,20),(9,21),(9,22),(8,4),(8,6),(8,10),(8,15),(8,18),(2,4),(2,5),(2,6),(2,2),(2,25);
 /*!40000 ALTER TABLE `playlist_songs` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -51,4 +51,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-04-26  2:42:12
+-- Dump completed on 2021-04-27 23:04:24
